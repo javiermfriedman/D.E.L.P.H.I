@@ -1,0 +1,63 @@
+name: Send Daily Word
+
+on:
+  schedule:
+    # 2pm EDT = 18:00 UTC (during daylight saving, Mar-Nov)
+    # Adjust to '0 19 * * *' for 2pm EST (Nov-Mar) if needed
+    - cron: '0 18 * * *'
+  workflow_dispatch: # allows manual trigger from GitHub UI
+
+jobs:
+  send-word:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+      TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+      TO_NUMBER: ${{ secrets.TO_NUMBER }}
+      FROM_NUMBER: ${{ secrets.FROM_NUMBER }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Start server
+        run: uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+
+      - name: Wait for server to be ready
+        run: |
+          for i in $(seq 1 15); do
+            if curl -s http://localhost:8000/ > /dev/null 2>&1; then
+              echo "Server is ready"
+              exit 0
+            fi
+            echo "Waiting for server... attempt $i"
+            sleep 2
+          done
+          echo "Server failed to start"
+          exit 1
+
+      - name: Hit /send endpoint
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:8000/send)
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | sed '$d')
+          echo "Status: $http_code"
+          echo "Response: $body"
+          if [ "$http_code" -ne 200 ]; then
+            echo "Request failed with status $http_code"
+            exit 1
+          fi
