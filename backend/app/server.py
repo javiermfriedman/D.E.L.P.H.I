@@ -5,8 +5,9 @@ from app.supabase_client import (
     add_word_to_past,
     remove_word_from_upcoming,
     get_word_by_id,
+    get_all_words_from_upcoming,
 )
-from app.schemas import send_featured_word_response
+from app.schemas import send_featured_word_response, words_in_upcoming_response
 from app.twilio import send_message
 from datetime import datetime
 from fastapi import HTTPException
@@ -21,8 +22,28 @@ def add_new_word(word: str, definition: str, part_of_speech: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def send_featured_word():
 
+# get all words in upcoming queue, add to list, and return list
+def get_upcoming_words():
+    upcoming_words = get_all_words_from_upcoming()
+    if not upcoming_words.data:
+        raise HTTPException(status_code=404, detail="No words in upcoming queue")
+    upcoming_words_list = upcoming_words.data
+
+    words = []
+    for word in upcoming_words_list:
+        word_id = word["word_id"]
+        try:
+            word_response = get_word_by_id(word_id)
+            word_data = word_response.data[0]
+            upcoming_word = words_in_upcoming_response(word=word_data["word"], definition=word_data["definition"], part_of_speech=word_data["part_of_speech"])
+            words.append(upcoming_word)
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=str(e))
+        
+    return words
+
+def send_featured_word():
     next_word = get_next_word_from_upcoming()
     if not next_word.data:
         raise HTTPException(status_code=404, detail="No words in upcoming queue")

@@ -53,6 +53,13 @@ def get_next_word_from_upcoming():
         .execute()
     )
 
+def get_all_words_from_upcoming():
+    return (
+        supabase.table("upcoming")
+        .select("*")
+        .execute()
+    )
+
 def remove_word_from_upcoming(word_id: int):
 
     return (
