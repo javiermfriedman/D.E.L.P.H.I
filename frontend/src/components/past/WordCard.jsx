@@ -1,0 +1,23 @@
+export default function WordCard({
+  word,
+  definition,
+  part_of_speech,
+  featured_on,
+}) {
+  const date = featured_on
+    ? new Date(featured_on).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
+
+  return (
+    <div className="word-card">
+      <div className="word-card-date">{date}</div>
+      <div className="word-card-word">{word}</div>
+      <div className="word-card-pos">{part_of_speech}</div>
+      <div className="word-card-definition">{definition}</div>
+    </div>
+  );
+}
