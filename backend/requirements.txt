@@ -1,0 +1,6 @@
+supabase
+uvicorn
+fastapi
+pytest
+dotenv
+twilio
