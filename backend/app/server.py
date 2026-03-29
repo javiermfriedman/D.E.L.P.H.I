@@ -6,11 +6,14 @@ from app.supabase_client import (
     remove_word_from_upcoming,
     get_word_by_id,
     get_all_words_from_upcoming,
+    get_all_words_from_past,
 )
 from app.schemas import send_featured_word_response, words_in_upcoming_response
 from app.twilio import send_message
 from datetime import datetime
 from fastapi import HTTPException
+from app.dictionary import lookup_word
+from app.schemas import lookup_word_response, words_in_past_response
 # add to word to word table, get the id and add it to upcoming
 def add_new_word(word: str, definition: str, part_of_speech: str):
     try:
@@ -22,7 +25,12 @@ def add_new_word(word: str, definition: str, part_of_speech: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+def delete_upcoming_word(word_id: int):
+    try:
+        remove_word_from_upcoming(word_id)
+        return "word deleted successfully"
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 # get all words in upcoming queue, add to list, and return list
 def get_upcoming_words():
     upcoming_words = get_all_words_from_upcoming()
@@ -36,12 +44,35 @@ def get_upcoming_words():
         try:
             word_response = get_word_by_id(word_id)
             word_data = word_response.data[0]
-            upcoming_word = words_in_upcoming_response(word=word_data["word"], definition=word_data["definition"], part_of_speech=word_data["part_of_speech"])
+            upcoming_word = words_in_upcoming_response(word_id=word_id, word=word_data["word"], definition=word_data["definition"], part_of_speech=word_data["part_of_speech"])
             words.append(upcoming_word)
         except Exception as e:
             raise HTTPException(status_code=404, detail=str(e))
         
     return words
+
+def get_past_words():
+    print("get_past_words")
+    past_words = get_all_words_from_past()
+    if not past_words.data:
+        raise HTTPException(status_code=404, detail="No words in past queue")
+    past_words_list = past_words.data
+    print(past_words_list)
+    words = []
+    for word in past_words_list:
+        word_id = word["word_id"]
+        try:
+            word_response = get_word_by_id(word_id)
+            word_data = word_response.data[0]
+            print("test1")
+            past_word = words_in_past_response(word_id=word_id, word=word_data["word"], featured_on=word["featured_on"], definition=word_data["definition"], part_of_speech=word_data["part_of_speech"])
+            print("past_word", past_word)
+            words.append(past_word)
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=str(e))
+    
+    return words
+
 
 def send_featured_word():
     next_word = get_next_word_from_upcoming()
@@ -63,4 +94,24 @@ def send_featured_word():
 
     sid = send_message(message)
     return send_featured_word_response(sid=sid, message=message)
+
+def get_word_data(word: str):
+    try:
+        response = lookup_word(word)
+        data = response.json()
+
+        if not isinstance(data, list) or len(data) == 0:
+            return lookup_word_response(word=word, definition=None, part_of_speech=None)
+
+        entry = data[0]
+        meaning = entry["meanings"][0]
+
+        return lookup_word_response(
+            word=entry["word"],
+            definition=meaning["definitions"][0]["definition"],
+            part_of_speech=meaning["partOfSpeech"],
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 

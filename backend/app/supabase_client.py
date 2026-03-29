@@ -60,6 +60,13 @@ def get_all_words_from_upcoming():
         .execute()
     )
 
+def get_all_words_from_past():
+    return (
+        supabase.table("past")
+        .select("*")
+        .execute()
+    )
+
 def remove_word_from_upcoming(word_id: int):
 
     return (
