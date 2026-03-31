@@ -2,8 +2,9 @@ supabase
 uvicorn
 fastapi
 pytest
-dotenv
+python-dotenv
 twilio
 langchain
 langchain-openai
 langgraph
+requests

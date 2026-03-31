@@ -1,49 +1,192 @@
-# D.E.L.P.H.I
+# D.E.L.P.H.I.
 
+**A vocabulary oracle — curate, queue, and deliver a word of the day via WhatsApp.**
 
-make a backend that will support crud operations for adding new words
+D.E.L.P.H.I. is a full-stack word-of-the-day application themed around the ancient Oracle of Delphi. Add words manually or summon the Oracle — an LLM-powered agent that conjures seven curated words at once. Each morning, a GitHub Actions workflow delivers the next queued word straight to your phone over WhatsApp.
 
-db: 
-words(id, word, definition, part_of_speech, created_at)
+## hero gifs
+- landing page
+- upcoming
+- past
+- invoking the hero 
 
-upcoming(id, word_id FK, added: time)   -- ordered queue, reorderable
-- the oldest wordst go next
-- if want to reorder list, then make new queue and add to db in reverse order
+---
 
+## Features
 
-past(id, word_id FK, featured_on: date) 
+- **Word management** — Add words with definitions and parts of speech, powered by live dictionary lookup as you type.
+- **Upcoming queue** — A reorderable timeline of words waiting to be featured, rendered as a vertical roadmap.
+- **Past words** — A masonry grid of previously featured words displayed on glass-style cards.
+- **The Oracle** — Invoke a LangGraph ReAct agent backed by OpenAI to generate seven vocabulary words, complete with definitions, that are automatically enqueued.
+- **Daily delivery** — A scheduled GitHub Actions workflow hits the `/send` endpoint each morning, moving the next word from upcoming to past and sending it via Twilio WhatsApp.
+- **Animated UI** — Floating word particles, typewriter title reveal, crystal ball summoning sequence with elder futhark runes, and smooth page transitions.
 
-src/
-├── main.jsx
-├── App.jsx                  # Route: "/" = Landing, "/dashboard" = Dashboard
-│
-├── pages/
-│   ├── Landing.jsx          # Full landing page with animation + Enter CTA
-│   └── Dashboard.jsx        # Shell: sidebar + main content area
-│
-├── components/
-│   ├── landing/
-│   │   ├── WordParticles.jsx     # Floating/morphing ambient word animation
-│   │   └── TypewriterTitle.jsx   # D.E.L.P.H.I letter-by-letter reveal
-│   │
-│   ├── sidebar/
-│   │   └── Sidebar.jsx           # Nav links: Upcoming, Past, Add Word
-│   │
-│   ├── upcoming/
-│   │   ├── UpcomingTimeline.jsx  # Vertical roadmap spine + nodes
-│   │   └── TimelineNode.jsx      # Individual word node with delete
-│   │
-│   ├── past/
-│   │   ├── PastWordsGrid.jsx     # Masonry grid container
-│   │   └── WordCard.jsx          # Individual glass card
-│   │
-│   └── modals/
-│       └── AddWordModal.jsx      # Live-lookup form modal
-│
-├── hooks/
-│   ├── useUpcomingWords.js       # Fetch + delete upcoming
-│   ├── usePastWords.js           # Fetch past words
-│   └── useDictionaryLookup.js    # Debounced lookup as user types
-│
-└── api/
-    └── client.js                 # All fetch calls to your FastAPI backend
+---
+
+## Tech Stack
+
+| Layer         | Technologies                                        |
+| ------------- | --------------------------------------------------- |
+| Frontend      | React 19, React Router 7, Vite 8                    |
+| Backend       | Python 3.12, FastAPI, Uvicorn                       |
+| Database      | Supabase (PostgreSQL)                                |
+| Integrations  | Twilio (WhatsApp), Free Dictionary API              |
+| AI / LLM      | LangChain, LangChain-OpenAI, LangGraph              |
+| CI            | GitHub Actions (daily cron job)                      |
+
+---
+
+## Project Structure
+
+```
+delphi/
+├── backend/
+│   ├── app/
+│   │   ├── main.py              # FastAPI app, routes, CORS
+│   │   ├── server.py            # Business logic (send, divine, etc.)
+│   │   ├── schemas.py           # Pydantic request/response models
+│   │   └── services/
+│   │       ├── dictionary.py    # Free Dictionary API client
+│   │       ├── llm.py           # LangGraph Oracle agent
+│   │       ├── supabase_client.py  # Supabase CRUD helpers
+│   │       └── twilio.py        # WhatsApp message sender
+│   ├── tests/
+│   ├── requirements.txt
+│   └── boot_up.py               # macOS dev launcher (optional)
+├── frontend/
+│   └── src/
+│       ├── api/client.js        # Fetch calls to FastAPI
+│       ├── hooks/               # Data-fetching hooks
+│       ├── pages/               # Landing, Dashboard
+│       └── components/
+│           ├── landing/         # WordParticles, TypewriterTitle
+│           ├── sidebar/         # Navigation
+│           ├── upcoming/        # Timeline queue view
+│           ├── past/            # Masonry grid of featured words
+│           ├── oracle/          # Summoning animation, StoneTablet
+│           └── modals/          # AddWord, Banish, Choice modals
+└── .github/workflows/
+    └── send-daily-word.yml      # Daily cron → POST /send
+```
+
+---
+
+## API Endpoints
+
+| Method   | Path                | Description                                          |
+| -------- | ------------------- | ---------------------------------------------------- |
+| `GET`    | `/`                 | Health check                                         |
+| `POST`   | `/words`            | Add a new word and enqueue it                        |
+| `GET`    | `/words/upcoming`   | List all upcoming words                              |
+| `GET`    | `/words/past`       | List all past featured words                         |
+| `DELETE` | `/words/{word_id}`  | Remove a word from the upcoming queue                |
+| `POST`   | `/dictionary/lookup`| Look up a word definition from the dictionary API    |
+| `POST`   | `/words/divine/`    | Invoke the Oracle to generate and enqueue 7 words    |
+| `POST`   | `/send`             | Feature the next word, send via WhatsApp, move to past|
+
+---
+
+## Database Schema
+
+Three tables in Supabase (PostgreSQL):
+
+- **`words`** — `id`, `word`, `definition`, `part_of_speech`, `created_at`
+- **`upcoming`** — `id`, `word_id` (FK → words), `added_at` — ordered queue, oldest first
+- **`past`** — `id`, `word_id` (FK → words), `featured_on` — archive of delivered words
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- A [Supabase](https://supabase.com) project with the tables above
+- A [Twilio](https://www.twilio.com) account with WhatsApp sandbox or approved sender
+- An [OpenAI](https://platform.openai.com) API key (for the Oracle feature)
+
+### Environment Variables
+
+Create `backend/.env` with:
+
+```env
+SUPABASE_URL=your-supabase-url
+SUPABASE_KEY=your-supabase-anon-key
+TWILIO_ACCOUNT_SID=your-twilio-sid
+TWILIO_AUTH_TOKEN=your-twilio-auth-token
+TO_NUMBER=whatsapp:+1234567890
+FROM_NUMBER=whatsapp:+0987654321
+OPENAI_API_KEY=your-openai-api-key
+```
+
+### Docker (recommended)
+
+The easiest way to run the full stack. Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+```bash
+docker compose up --build
+```
+
+| Service  | URL                    |
+| -------- | ---------------------- |
+| Frontend | `http://localhost:3000` |
+| Backend  | `http://localhost:8000` |
+
+The frontend's nginx server automatically proxies API requests to the backend, so everything works through port 3000.
+
+To stop the containers:
+
+```bash
+docker compose down
+```
+
+### Local Development
+
+If you prefer running without Docker, you'll also need Python 3.12+ and Node.js 22+.
+
+**Backend:**
+
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+The API will be available at `http://localhost:8000`.
+
+**Frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app will be available at `http://localhost:5173`.
+
+### Tests
+
+```bash
+cd backend
+pytest
+```
+
+---
+
+## Daily Word Delivery
+
+The GitHub Actions workflow (`.github/workflows/send-daily-word.yml`) runs daily at 13:00 UTC (8 AM EST). It spins up the backend, calls `POST /send`, and the endpoint:
+
+1. Pulls the next word from the **upcoming** queue (oldest first)
+2. Moves it to the **past** table
+3. Sends the word and definition via Twilio WhatsApp
+
+If the upcoming queue is empty, the Oracle is automatically invoked to refill it before sending.
+
+To trigger it manually, use the **Run workflow** button in the GitHub Actions tab.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

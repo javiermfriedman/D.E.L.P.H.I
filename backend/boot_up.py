@@ -1,3 +1,7 @@
+"""
+This is a script that an be called from my bash shell to boot up the application.
+with an alias and play music in the background.
+"""
 import os
 import subprocess
 import sys
