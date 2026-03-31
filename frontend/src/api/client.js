@@ -30,6 +30,14 @@ export async function deleteUpcomingWord(wordId) {
   return res.json();
 }
 
+export async function divineWords() {
+  const res = await fetch(`${BASE_URL}/words/divine/`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Failed to divine words");
+  return res.json();
+}
+
 export async function lookupWord(word) {
   const res = await fetch(
     `${BASE_URL}/dictionary/lookup?word=${encodeURIComponent(word)}`,
