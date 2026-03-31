@@ -80,7 +80,11 @@ def get_past_words():
 def send_featured_word():
     next_word = get_next_word_from_upcoming()
     if not next_word.data:
-        raise HTTPException(status_code=404, detail="No words in upcoming queue")
+        invoke_oracle()
+        next_word = get_next_word_from_upcoming()
+        if not next_word.data:
+            raise HTTPException(status_code=404, detail="No words in upcoming queue")
+    
     word_id = next_word.data[0]["word_id"]
     try:
         add_word_to_past(word_id, datetime.now())

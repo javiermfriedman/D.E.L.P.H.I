@@ -4,7 +4,7 @@ on:
   schedule:
     # 2pm EDT = 18:00 UTC (during daylight saving, Mar-Nov)
     # Adjust to '0 19 * * *' for 2pm EST (Nov-Mar) if needed
-    - cron: '0 18 * * *'
+    - cron: '30 16 * * *'
   workflow_dispatch: # allows manual trigger from GitHub UI
 
 jobs:
@@ -21,6 +21,7 @@ jobs:
       TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
       TO_NUMBER: ${{ secrets.TO_NUMBER }}
       FROM_NUMBER: ${{ secrets.FROM_NUMBER }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
       - name: Checkout repo
