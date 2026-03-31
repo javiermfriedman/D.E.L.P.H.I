@@ -63,4 +63,3 @@ def read_root():
 @app.post("/words/divine/")
 def add_words_llm():
     return invoke_oracle()
-
