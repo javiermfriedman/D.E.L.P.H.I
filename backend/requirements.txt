@@ -4,3 +4,6 @@ fastapi
 pytest
 dotenv
 twilio
+langchain
+langchain-openai
+langgraph

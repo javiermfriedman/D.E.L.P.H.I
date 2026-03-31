@@ -26,3 +26,8 @@ class lookup_word_response(BaseModel):
     word: str
     definition: str | None = None
     part_of_speech: str | None = None
+
+class oracle_word(BaseModel):
+    word: str
+    definition: str
+    part_of_speech: str
