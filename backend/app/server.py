@@ -16,6 +16,7 @@ from fastapi import HTTPException
 from app.services.dictionary import lookup_word
 from app.schemas import lookup_word_response, words_in_past_response
 import openai
+
 import os
 # add to word to word table, get the id and add it to upcoming
 def add_new_word(word: str, definition: str, part_of_speech: str):
@@ -97,10 +98,14 @@ def send_featured_word():
     word_string = word_data["word"]
     definition = word_data["definition"]
     part_of_speech = word_data["part_of_speech"]
+    date = datetime.now().strftime("%B %d")
+
     message = (
-        f"✦ {word_string} ({part_of_speech})\n"
-        f"\n"
-        f"{definition}"
+        f"  📅 {date}  \n"
+        f"━━━━━━━━━━━━━━━\n\n"
+        f"✨ *{word_string}* _({part_of_speech})_\n\n"
+        f"{definition}\n\n"
+        f"━━━━━━━━━━━━━━━"
     )
     sid = send_message(message)
     return send_featured_word_response(sid=sid, message=message)
