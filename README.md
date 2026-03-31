@@ -1,5 +1,3 @@
-# D.E.L.P.H.I.
-
 ![Image](https://github.com/user-attachments/assets/9e3ddf8c-f27d-485d-a7af-9fb7d236abba)
 
 **A vocabulary oracle — curate, queue, and deliver a word of the day via WhatsApp.**
