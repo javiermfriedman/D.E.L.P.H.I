@@ -4,11 +4,8 @@
 
 D.E.L.P.H.I. is a full-stack word-of-the-day application themed around the ancient Oracle of Delphi. Add words manually or summon the Oracle — an LLM-powered agent that conjures seven curated words at once. Each morning, a GitHub Actions workflow delivers the next queued word straight to your phone over WhatsApp.
 
-## hero gifs
-- landing page
-- upcoming
-- past
-- invoking the hero 
+# Watch this demo 
+[![Watch the demo](https://img.youtube.com/vi/UiADcmmo-nc/maxresdefault.jpg)](https://www.youtube.com/watch?v=UiADcmmo-nc)
 
 ---
 
