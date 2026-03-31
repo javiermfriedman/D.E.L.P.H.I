@@ -2,10 +2,8 @@ name: Send Daily Word
 
 on:
   schedule:
-    # 2pm EDT = 18:00 UTC (during daylight saving, Mar-Nov)
-    # Adjust to '0 19 * * *' for 2pm EST (Nov-Mar) if needed
-    - cron: '30 16 * * *'
-  workflow_dispatch: # allows manual trigger from GitHub UI
+    - cron: '0 13 * * *'  # 8am EST / 9am EDT (GitHub Actions uses UTC)
+  workflow_dispatch:
 
 jobs:
   send-word:
