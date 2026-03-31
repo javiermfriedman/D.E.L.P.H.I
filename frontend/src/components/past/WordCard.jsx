@@ -3,6 +3,7 @@ export default function WordCard({
   definition,
   part_of_speech,
   featured_on,
+  revealDelay,
 }) {
   const date = featured_on
     ? new Date(featured_on).toLocaleDateString("en-US", {
@@ -12,8 +13,13 @@ export default function WordCard({
       })
     : null;
 
+  const hasReveal = revealDelay != null;
+
   return (
-    <div className="word-card">
+    <div
+      className={`word-card ${hasReveal ? "word-card--reveal" : ""}`}
+      style={hasReveal ? { animationDelay: `${revealDelay}ms` } : undefined}
+    >
       <div className="word-card-date">{date}</div>
       <div className="word-card-word">{word}</div>
       <div className="word-card-pos">{part_of_speech}</div>

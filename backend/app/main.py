@@ -8,6 +8,7 @@ from app.server import (
     get_word_data, 
     delete_upcoming_word,
     get_past_words,
+    invoke_oracle,
 )
 from app.schemas import (
     words_in_upcoming_response, 
@@ -57,4 +58,8 @@ def send_word():
 @app.get("/")
 def read_root():
     return {"message": "Hello, World!"}
+
+@app.post("/words/divine/")
+def add_words_llm():
+    return invoke_oracle()
 

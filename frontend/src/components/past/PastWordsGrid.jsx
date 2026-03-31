@@ -1,21 +1,33 @@
+import { useState, useEffect } from "react";
 import WordCard from "./WordCard";
+import ConstellationLoader from "./ConstellationLoader";
 import { usePastWords } from "../../hooks/usePastWords";
-import { useState } from "react";
+
+const REVEAL_COUNT = 18;
+const REVEAL_STAGGER = 60;
+const REVEAL_BASE = 150;
 
 export default function PastWordsGrid() {
   const { words, loading, error } = usePastWords();
   const [search, setSearch] = useState("");
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (!loading && words.length > 0 && !revealed) {
+      const timer = setTimeout(
+        () => setRevealed(true),
+        REVEAL_BASE + REVEAL_COUNT * REVEAL_STAGGER + 600,
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [loading, words.length, revealed]);
 
   const filtered = words.filter((w) =>
     w.word.toLowerCase().includes(search.toLowerCase()),
   );
 
   if (loading) {
-    return (
-      <div className="state-container">
-        <div className="loading-pulse">Retrieving past words...</div>
-      </div>
-    );
+    return <ConstellationLoader />;
   }
 
   if (error) {
@@ -28,7 +40,10 @@ export default function PastWordsGrid() {
 
   return (
     <div className="past-view">
-      <div className="view-header">
+      <div
+        className={`view-header ${!revealed ? "cascade-fade" : ""}`}
+        style={!revealed ? { animationDelay: "80ms" } : undefined}
+      >
         <h2 className="view-title">Past Words</h2>
         <input
           className="search-input"
@@ -46,7 +61,15 @@ export default function PastWordsGrid() {
       ) : (
         <div className="masonry-grid">
           {filtered.map((w, i) => (
-            <WordCard key={`${w.word}-${i}`} {...w} />
+            <WordCard
+              key={w.word}
+              {...w}
+              revealDelay={
+                !revealed && i < REVEAL_COUNT
+                  ? REVEAL_BASE + i * REVEAL_STAGGER
+                  : null
+              }
+            />
           ))}
         </div>
       )}

@@ -81,3 +81,12 @@ def add_word_to_past(word_id: int, featured_on: datetime):
         .insert({"word_id": word_id, "featured_on": featured_on.isoformat()})
         .execute()
     )
+
+
+def get_word_id_by_word(word: str):
+    return (
+        supabase.table("words")
+        .select("id")
+        .eq("word", word)
+        .execute()
+    )

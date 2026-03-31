@@ -1,7 +1,7 @@
 export default function Sidebar({ active, onNavigate, onAddWord }) {
   const navItems = [
-    { id: "upcoming", label: "Upcoming" },
-    { id: "past", label: "Past Words" },
+    { id: "upcoming", label: "Prophecies" },
+    { id: "past", label: "Echoes" },
   ];
 
   return (
@@ -27,7 +27,7 @@ export default function Sidebar({ active, onNavigate, onAddWord }) {
       <div className="sidebar-footer">
         <button className="add-word-btn" onClick={onAddWord}>
           <span className="add-icon">+</span>
-          Add Word
+          Offer Sacrifice
         </button>
       </div>
     </aside>
