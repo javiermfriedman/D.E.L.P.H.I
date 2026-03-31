@@ -3,14 +3,12 @@ import TimelineNode from "./TimelineNode";
 import OracleLoader from "./OracleLoader";
 import BanishVortex from "./BanishVortex";
 import BanishModal from "../modals/BanishModal";
-import { useUpcomingWords } from "../../hooks/useUpcomingWords";
 
 const CASCADE_COUNT = 5;
 const CASCADE_BASE = 80;
 const COLLAPSE_MS = 500;
 
-export default function UpcomingTimeline() {
-  const { words, loading, error, remove } = useUpcomingWords();
+export default function UpcomingTimeline({ words, loading, error, remove }) {
   const [banishTarget, setBanishTarget] = useState(null);
   const [banishPhase, setBanishPhase] = useState("idle");
 
@@ -74,7 +72,7 @@ export default function UpcomingTimeline() {
           <div className="timeline-spine" />
           {words.map((w, i) => (
             <TimelineNode
-              key={`${w.word}-${i}`}
+              key={`${w.word}-${w.word_id}`}
               {...w}
               index={i}
               onBanish={handleBanishClick}

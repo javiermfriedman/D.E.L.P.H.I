@@ -8,7 +8,7 @@ from app.services.supabase_client import (
     get_all_words_from_upcoming,
     get_all_words_from_past,
 )
-from app.schemas import send_featured_word_response, words_in_upcoming_response, oracle_word
+from app.schemas import send_featured_word_response, words_in_upcoming_response, oracle_word, add_word_response
 from app.services.twilio import send_message
 from app.services.llm import call_llm_agent
 from datetime import datetime
@@ -24,7 +24,7 @@ def add_new_word(word: str, definition: str, part_of_speech: str):
 
         word_id = response.data[0]["id"]
         response = add_word_to_upcoming(word_id)
-        return "added word successfully"
+        return add_word_response(id=word_id, word=word, definition=definition, part_of_speech=part_of_speech)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -123,9 +123,11 @@ def invoke_oracle():
     if response is None:
         raise HTTPException(status_code=500, detail="Failed to call LLM agent")
     
+    added_words = []
     for word in response:
         if not isinstance(word, oracle_word):
             raise HTTPException(status_code=500, detail="LLM agent provided wrong type")
         print("adding word: ", word)
-        add_new_word(word.word, word.definition, word.part_of_speech)
-    return response
+        result = add_new_word(word.word, word.definition, word.part_of_speech)
+        added_words.append(result)
+    return added_words

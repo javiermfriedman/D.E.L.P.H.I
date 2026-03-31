@@ -30,8 +30,8 @@ export default function AddWordModal({ onClose, onSuccess, noOverlay }) {
     setSubmitting(true);
     setError(null);
     try {
-      await addWord(word.trim(), definition.trim(), partOfSpeech.trim());
-      onSuccess?.();
+      const result = await addWord(word.trim(), definition.trim(), partOfSpeech.trim());
+      onSuccess?.(result);
       onClose();
     } catch (err) {
       setError("Failed to add word. Please try again.");

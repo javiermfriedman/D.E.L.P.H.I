@@ -29,7 +29,7 @@ export function useUpcomingWords() {
       const word = words[index];
       setWords((prev) => prev.filter((_, i) => i !== index));
       try {
-        await deleteUpcomingWord(index + 1);
+        await deleteUpcomingWord(word.word_id);
       } catch {
         load();
       }
@@ -37,5 +37,9 @@ export function useUpcomingWords() {
     [words, load],
   );
 
-  return { words, loading, error, refetch: load, remove };
+  const append = useCallback((newWords) => {
+    setWords((prev) => [...prev, ...newWords]);
+  }, []);
+
+  return { words, loading, error, refetch: load, remove, append };
 }

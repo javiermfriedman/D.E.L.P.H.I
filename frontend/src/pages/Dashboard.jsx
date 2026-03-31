@@ -7,21 +7,23 @@ import ChoiceModal from "../components/modals/ChoiceModal";
 import OracleSummoning from "../components/oracle/OracleSummoning";
 import StoneTablet from "../components/oracle/StoneTablet";
 import { divineWords } from "../api/client";
+import { useUpcomingWords } from "../hooks/useUpcomingWords";
+
+function toUpcomingWord(w) {
+  return { word_id: w.id, word: w.word, definition: w.definition, part_of_speech: w.part_of_speech };
+}
 
 export default function Dashboard() {
   const [activeView, setActiveView] = useState("upcoming");
-  const [refreshKey, setRefreshKey] = useState(0);
   const [oraclePhase, setOraclePhase] = useState(null);
   const [oracleWords, setOracleWords] = useState(null);
   const [oracleError, setOracleError] = useState(null);
 
+  const { words, loading, error, remove, append } = useUpcomingWords();
+
   useEffect(() => {
     document.body.classList.remove("fade-out");
   }, []);
-
-  function handleWordAdded() {
-    setRefreshKey((k) => k + 1);
-  }
 
   function handleAddWord() {
     setOraclePhase("choice");
@@ -37,8 +39,8 @@ export default function Dashboard() {
     setOracleError(null);
   }
 
-  function handleScribeSuccess() {
-    handleWordAdded();
+  function handleScribeSuccess(addedWord) {
+    append([toUpcomingWord(addedWord)]);
     setOraclePhase(null);
   }
 
@@ -47,7 +49,7 @@ export default function Dashboard() {
     setOracleError(null);
 
     divineWords()
-      .then((words) => setOracleWords(words))
+      .then((result) => setOracleWords(result))
       .catch(() => {
         setOraclePhase("choice");
         setOracleError("The Oracle could not be reached. Try again.");
@@ -59,9 +61,9 @@ export default function Dashboard() {
   }
 
   function handleTabletComplete() {
+    append(oracleWords.map(toUpcomingWord));
     setOraclePhase(null);
     setOracleWords(null);
-    handleWordAdded();
   }
 
   function handleOverlayClick(e) {
@@ -76,8 +78,10 @@ export default function Dashboard() {
         onAddWord={handleAddWord}
       />
       <main className="dashboard-main">
-        {activeView === "upcoming" && <UpcomingTimeline key={`upcoming-${refreshKey}`} />}
-        {activeView === "past" && <PastWordsGrid key={`past-${refreshKey}`} />}
+        {activeView === "upcoming" && (
+          <UpcomingTimeline words={words} loading={loading} error={error} remove={remove} />
+        )}
+        {activeView === "past" && <PastWordsGrid />}
       </main>
 
       {(oraclePhase === "choice" || oraclePhase === "scribe") && (
