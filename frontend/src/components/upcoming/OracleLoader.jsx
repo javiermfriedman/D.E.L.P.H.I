@@ -11,7 +11,7 @@ export default function OracleLoader() {
         </div>
       </div>
       <span className="oracle-text">
-        Consulting the oracle
+        calling forth what has not yet been spoken
         <span className="oracle-dots">
           <span>.</span>
           <span>.</span>

@@ -10,7 +10,6 @@ import { divineWords } from "../api/client";
 
 export default function Dashboard() {
   const [activeView, setActiveView] = useState("upcoming");
-  const [showAddModal, setShowAddModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [oraclePhase, setOraclePhase] = useState(null);
   const [oracleWords, setOracleWords] = useState(null);
@@ -30,8 +29,17 @@ export default function Dashboard() {
   }
 
   function handleScribeByHand() {
+    setOraclePhase("scribe");
+  }
+
+  function handleCloseModal() {
     setOraclePhase(null);
-    setShowAddModal(true);
+    setOracleError(null);
+  }
+
+  function handleScribeSuccess() {
+    handleWordAdded();
+    setOraclePhase(null);
   }
 
   function handleAskOracle() {
@@ -56,9 +64,8 @@ export default function Dashboard() {
     handleWordAdded();
   }
 
-  function handleCloseChoice() {
-    setOraclePhase(null);
-    setOracleError(null);
+  function handleOverlayClick(e) {
+    if (e.target === e.currentTarget) handleCloseModal();
   }
 
   return (
@@ -73,20 +80,24 @@ export default function Dashboard() {
         {activeView === "past" && <PastWordsGrid key={`past-${refreshKey}`} />}
       </main>
 
-      {showAddModal && (
-        <AddWordModal
-          onClose={() => setShowAddModal(false)}
-          onSuccess={handleWordAdded}
-        />
-      )}
-
-      {oraclePhase === "choice" && (
-        <ChoiceModal
-          onAskOracle={handleAskOracle}
-          onScribeByHand={handleScribeByHand}
-          onClose={handleCloseChoice}
-          error={oracleError}
-        />
+      {(oraclePhase === "choice" || oraclePhase === "scribe") && (
+        <div className="modal-overlay" onClick={handleOverlayClick}>
+          {oraclePhase === "choice" && (
+            <ChoiceModal
+              onAskOracle={handleAskOracle}
+              onScribeByHand={handleScribeByHand}
+              onClose={handleCloseModal}
+              error={oracleError}
+            />
+          )}
+          {oraclePhase === "scribe" && (
+            <AddWordModal
+              noOverlay
+              onClose={handleCloseModal}
+              onSuccess={handleScribeSuccess}
+            />
+          )}
+        </div>
       )}
 
       {oraclePhase === "summoning" && (
