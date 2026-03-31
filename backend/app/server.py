@@ -97,8 +97,11 @@ def send_featured_word():
     word_string = word_data["word"]
     definition = word_data["definition"]
     part_of_speech = word_data["part_of_speech"]
-    message = f"Word: {word_string}\nDefinition: {definition}\nPart of Speech: {part_of_speech}"
-
+    message = (
+        f"✦ {word_string} ({part_of_speech})\n"
+        f"\n"
+        f"{definition}"
+    )
     sid = send_message(message)
     return send_featured_word_response(sid=sid, message=message)
 
