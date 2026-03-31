@@ -1,14 +1,25 @@
+const CASCADE_STAGGER = 100;
+const CASCADE_BASE = 80;
+
 export default function TimelineNode({
   word,
   definition,
   part_of_speech,
   index,
   onDelete,
+  cascadeIndex,
 }) {
   const isFirst = index === 0;
+  const hasCascade = cascadeIndex != null;
+  const cascadeStyle = hasCascade
+    ? { animationDelay: `${CASCADE_BASE + (cascadeIndex + 1) * CASCADE_STAGGER}ms` }
+    : undefined;
 
   return (
-    <div className={`timeline-node ${isFirst ? "timeline-node--next" : ""}`}>
+    <div
+      className={`timeline-node ${isFirst ? "timeline-node--next" : ""} ${hasCascade ? "cascade-fade" : ""}`}
+      style={cascadeStyle}
+    >
       <div className="timeline-connector">
         <div
           className={`timeline-dot ${isFirst ? "timeline-dot--active" : ""}`}

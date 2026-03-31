@@ -714,6 +714,177 @@ body.fade-out {
   cursor: not-allowed;
 }
 
+/* ─── Oracle Loader ─────────────────────────────────── */
+.oracle-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 40vh;
+  gap: 2.5rem;
+  animation: fadeIn 0.8s ease;
+}
+
+.oracle-scene {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 800px;
+}
+
+.oracle-aura {
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+  animation: auraPulse 3s ease-in-out infinite;
+}
+
+@keyframes auraPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.92); }
+  50%      { opacity: 1; transform: scale(1.08); }
+}
+
+.oracle-globe {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  transform-style: preserve-3d;
+}
+
+.orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid;
+}
+
+.orbit::after {
+  content: '';
+  position: absolute;
+  top: -2.5px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.orbit--1 {
+  border-color: var(--amber-ghost);
+  animation: orbitSpin1 8s linear infinite;
+}
+.orbit--1::after {
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber), 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.orbit--2 {
+  inset: 12px;
+  border-color: rgba(245, 158, 11, 0.22);
+  animation: orbitSpin2 6s linear infinite;
+}
+.orbit--2::after {
+  background: var(--amber-dim);
+  box-shadow: 0 0 6px var(--amber-dim);
+  width: 4px;
+  height: 4px;
+  top: -2px;
+}
+
+.orbit--3 {
+  inset: 6px;
+  border-color: rgba(245, 158, 11, 0.12);
+  animation: orbitSpin3 10s linear infinite;
+}
+.orbit--3::after {
+  background: var(--amber-deep);
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.4);
+  width: 3px;
+  height: 3px;
+  top: -1.5px;
+}
+
+@keyframes orbitSpin1 {
+  from { transform: rotateZ(0deg)   rotateX(72deg); }
+  to   { transform: rotateZ(360deg) rotateX(72deg); }
+}
+
+@keyframes orbitSpin2 {
+  from { transform: rotateZ(60deg)   rotateX(68deg); }
+  to   { transform: rotateZ(-300deg) rotateX(68deg); }
+}
+
+@keyframes orbitSpin3 {
+  from { transform: rotateZ(-30deg) rotateX(62deg); }
+  to   { transform: rotateZ(330deg) rotateX(62deg); }
+}
+
+.oracle-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 12px var(--amber),
+    0 0 30px rgba(245, 158, 11, 0.3),
+    0 0 60px rgba(245, 158, 11, 0.1);
+  animation: corePulse 2s ease-in-out infinite;
+}
+
+@keyframes corePulse {
+  0%, 100% {
+    box-shadow:
+      0 0 12px var(--amber),
+      0 0 30px rgba(245, 158, 11, 0.3),
+      0 0 60px rgba(245, 158, 11, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 18px var(--amber),
+      0 0 45px rgba(245, 158, 11, 0.4),
+      0 0 80px rgba(245, 158, 11, 0.15);
+  }
+}
+
+.oracle-text {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+
+.oracle-dots span {
+  opacity: 0;
+  animation: dotReveal 1.4s infinite;
+}
+.oracle-dots span:nth-child(2) { animation-delay: 0.2s; }
+.oracle-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotReveal {
+  0%, 20% { opacity: 0; }
+  40%     { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+/* ─── Cascade Animation ─────────────────────────────── */
+.cascade-fade {
+  opacity: 0;
+  animation: cascadeIn 0.45s ease forwards;
+}
+
+@keyframes cascadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── States ─────────────────────────────────────────── */
 .state-container {
   display: flex;

@@ -1,15 +1,15 @@
 import TimelineNode from "./TimelineNode";
+import OracleLoader from "./OracleLoader";
 import { useUpcomingWords } from "../../hooks/useUpcomingWords";
+
+const CASCADE_COUNT = 5;
+const CASCADE_BASE = 80;
 
 export default function UpcomingTimeline() {
   const { words, loading, error, remove } = useUpcomingWords();
 
   if (loading) {
-    return (
-      <div className="state-container">
-        <div className="loading-pulse">Loading upcoming words...</div>
-      </div>
-    );
+    return <OracleLoader />;
   }
 
   if (error) {
@@ -32,7 +32,10 @@ export default function UpcomingTimeline() {
 
   return (
     <div className="timeline-view">
-      <div className="view-header">
+      <div
+        className="view-header cascade-fade"
+        style={{ animationDelay: `${CASCADE_BASE}ms` }}
+      >
         <h2 className="view-title">Upcoming Words</h2>
         <span className="word-count">{words.length} queued</span>
       </div>
@@ -45,6 +48,7 @@ export default function UpcomingTimeline() {
             {...w}
             index={i}
             onDelete={remove}
+            cascadeIndex={i < CASCADE_COUNT ? i : null}
           />
         ))}
       </div>
