@@ -2,9 +2,15 @@
 
 D.E.L.P.H.I. is a full-stack word-of-the-day application inspired by the ancient Oracle of Delphi. Users can manually curate their own vocabulary queue or invoke the Oracle — an LLM-powered agent that generates seven thoughtfully selected words at a time. A scheduled GitHub Actions workflow then delivers the next word each morning directly to WhatsApp.
 
-### 👉 Watch the Demo
-[![Watch the demo](https://img.youtube.com/vi/UiADcmmo-nc/maxresdefault.jpg)](https://www.youtube.com/watch?v=UiADcmmo-nc)
+<p align="center">
+  <strong>👉 Watch the Demo</strong>
+</p>
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=UiADcmmo-nc">
+    <img src="https://img.youtube.com/vi/UiADcmmo-nc/maxresdefault.jpg" width="420"/>
+  </a>
+</p>
 ## Features
 
 - **Word management** — Add words with definitions and parts of speech, powered by live dictionary lookup as you type.
