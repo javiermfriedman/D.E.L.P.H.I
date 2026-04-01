@@ -1,18 +1,9 @@
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/9e3ddf8c-f27d-485d-a7af-9fb7d236abba" width="420"/>
-</p>
+![Image](https://github.com/user-attachments/assets/9e3ddf8c-f27d-485d-a7af-9fb7d236abba)
 
-<p align="center">
-  <strong>A vocabulary oracle — curate, queue, and deliver a word of the day via WhatsApp.</strong>
-</p>
+D.E.L.P.H.I. is a full-stack word-of-the-day application themed around the ancient Oracle of Delphi. Add words manually or summon the Oracle — an LLM-powered agent that conjures seven curated words at once. Each morning, a GitHub Actions workflow delivers the next queued word straight to your phone over WhatsApp.
 
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=UiADcmmo-nc">
-    <img src="https://img.youtube.com/vi/UiADcmmo-nc/maxresdefault.jpg" width="420"/>
-  </a>
-  <br/>
-  <em>▶ Watch Demo</em>
-</p>
+# Watch this demo
+[![Watch the demo](https://img.youtube.com/vi/UiADcmmo-nc/maxresdefault.jpg)](https://www.youtube.com/watch?v=UiADcmmo-nc)
 
 ## Features
 
