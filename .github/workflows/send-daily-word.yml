@@ -31,13 +31,13 @@ jobs:
       - name: Start server
         run: |
           docker run -d --name delphi-backend -p 8000:8000 \
-            -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-            -e SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
-            -e TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
-            -e TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
-            -e TO_NUMBER=${{ secrets.TO_NUMBER }} \
-            -e FROM_NUMBER=${{ secrets.FROM_NUMBER }} \
-            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e SUPABASE_URL \
+            -e SUPABASE_KEY \
+            -e TWILIO_ACCOUNT_SID \
+            -e TWILIO_AUTH_TOKEN \
+            -e TO_NUMBER \
+            -e FROM_NUMBER \
+            -e OPENAI_API_KEY \
             delphi-backend
 
       - name: Wait for server to be ready
