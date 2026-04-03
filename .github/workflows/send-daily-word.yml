@@ -25,16 +25,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Build Docker image
+        run: docker build -t delphi-backend .
 
       - name: Start server
-        run: uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        run: |
+          docker run -d --name delphi-backend -p 8000:8000 \
+            -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            -e SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
+            -e TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
+            -e TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
+            -e TO_NUMBER=${{ secrets.TO_NUMBER }} \
+            -e FROM_NUMBER=${{ secrets.FROM_NUMBER }} \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            delphi-backend
 
       - name: Wait for server to be ready
         run: |
@@ -47,6 +51,7 @@ jobs:
             sleep 2
           done
           echo "Server failed to start"
+          docker logs delphi-backend
           exit 1
 
       - name: Hit /send endpoint
