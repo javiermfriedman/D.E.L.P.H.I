@@ -2,7 +2,7 @@ name: Send Daily Word
 
 on:
   schedule:
-    - cron: '20 18 * * *'  # 1:20pm EST / 2:20pm EDT (GitHub Actions uses UTC)
+    - cron: '0 12 * * *'  # 1:20pm EST / 2:20pm EDT (GitHub Actions uses UTC)
   workflow_dispatch:
 
 jobs:
